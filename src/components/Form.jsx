@@ -1,29 +1,61 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { MdAddCall } from "react-icons/md";
+import Label from "../common/Label";
+import Input from "../common/Input";
+import Button from "../common/Button";
 const Form = () => {
   const navigate = useNavigate();
+  const { email } = useParams();
+  const [emailExist, setEmailExist] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     phone: "",
     email: "",
   });
+
+  function isUserExist(email) {
+    const items = JSON.parse(localStorage.getItem("phoneBook")) || [];
+    const userExist = items?.find((obj) => obj.email === email);
+    if (userExist) {
+      return userExist;
+    } else {
+      return false;
+    }
+  }
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+    if (isUserExist(value)) {
+      setEmailExist(true);
+    } else {
+      setEmailExist(false);
+    }
   }
+
   function handleSubmit(e) {
     e.preventDefault();
     const items = JSON.parse(localStorage.getItem("phoneBook")) || [];
-    console.log("Items from local storage:", items);
-    const updatedItems = [...items, formData];
-    localStorage.setItem("phoneBook", JSON.stringify(updatedItems));
+    if (!email) {
+      const updatedItems = [...items, formData];
+      localStorage.setItem("phoneBook", JSON.stringify(updatedItems));
+    } else {
+      const itemWithEmail = items?.findIndex((obj) => obj.email === email);
+      items[itemWithEmail] = formData;
+      localStorage.setItem("phoneBook", JSON.stringify(items));
+    }
     navigate("/");
   }
+  useEffect(() => {
+    if (email && isUserExist(email)) {
+      const data = isUserExist(email);
+      setFormData(data);
+    }
+  }, [email]);
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -37,13 +69,13 @@ const Form = () => {
 
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label
+            <Label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              for="grid-first-name"
+              htmlFor="grid-first-name"
             >
               First Name
-            </label>
-            <input
+            </Label>
+            <Input
               className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               id="grid-first-name"
               type="text"
@@ -54,13 +86,13 @@ const Form = () => {
             />
           </div>
           <div className="w-full md:w-1/2 px-3">
-            <label
+            <Label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              for="grid-last-name"
+              htmlFor="grid-last-name"
             >
               Last Name
-            </label>
-            <input
+            </Label>
+            <Input
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-last-name"
               type="text"
@@ -73,13 +105,13 @@ const Form = () => {
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full px-3">
-            <label
+            <Label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              for="grid-phone"
+              htmlFor="grid-phone"
             >
               phone Number (03xx-xxxxxxx)
-            </label>
-            <input
+            </Label>
+            <Input
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-phone"
               type="tel"
@@ -93,13 +125,13 @@ const Form = () => {
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full px-3">
-            <label
+            <Label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              for="grid-email"
+              htmlFor="grid-email"
             >
               Email
-            </label>
-            <input
+            </Label>
+            <Input
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-email"
               type="email"
@@ -109,14 +141,18 @@ const Form = () => {
               onChange={handleChange}
             />
           </div>
+          <div>
+            {emailExist && <div>User with this email already exist</div>}
+          </div>
         </div>
-        <button
+        <Button
           type="submit"
-          className="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-800 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          className="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-800 cursor-pointer hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          isDisable={emailExist}
         >
           Submit
-        </button>
-        <button
+        </Button>
+        <Button
           className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-700 to-blue-300 group-hover:from-cyan-300 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
           onClick={() => {
             navigate("/");
@@ -125,7 +161,7 @@ const Form = () => {
           <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
             Go to Contacts
           </span>
-        </button>
+        </Button>
       </form>
     </div>
   );

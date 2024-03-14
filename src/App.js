@@ -1,16 +1,15 @@
-import logo from "./logo.svg";
 import Form from "./components/Form";
-import Card from "./components/Card";
+import Home from "./components/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App ">
+    <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Card />} />
-          <Route path="/new" element={<Form />} />
-          
+          <Route path="/" element={<Home />} />
+          <Route path="/create" element={<Form />} />
+          <Route path="/update/:email" element={<Form />} />
         </Routes>
       </BrowserRouter>
     </div>

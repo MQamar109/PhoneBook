@@ -69,14 +69,9 @@ const Form = () => {
 
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <Label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="grid-first-name"
-            >
-              First Name
-            </Label>
+            <Label htmlFor="grid-first-name">First Name</Label>
             <Input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+              varient="smallGrayOutlined"
               id="grid-first-name"
               type="text"
               placeholder="Jane"
@@ -86,14 +81,9 @@ const Form = () => {
             />
           </div>
           <div className="w-full md:w-1/2 px-3">
-            <Label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="grid-last-name"
-            >
-              Last Name
-            </Label>
+            <Label htmlFor="grid-last-name">Last Name</Label>
             <Input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              varient="smallGrayOutlined"
               id="grid-last-name"
               type="text"
               placeholder="Doe"
@@ -105,14 +95,9 @@ const Form = () => {
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full px-3">
-            <Label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="grid-phone"
-            >
-              phone Number (03xx-xxxxxxx)
-            </Label>
+            <Label htmlFor="grid-phone">phone Number (03xx-xxxxxxx)</Label>
             <Input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              varient="mediumGrayOutlined"
               id="grid-phone"
               type="tel"
               placeholder="0300-2587412"
@@ -125,14 +110,9 @@ const Form = () => {
         </div>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full px-3">
-            <Label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="grid-email"
-            >
-              Email
-            </Label>
+            <Label htmlFor="grid-email">Email</Label>
             <Input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              varient="mediumGrayOutlined"
               id="grid-email"
               type="email"
               placeholder="example@gmail.com"
@@ -145,15 +125,11 @@ const Form = () => {
             {emailExist && <div>User with this email already exist</div>}
           </div>
         </div>
-        <Button
-          type="submit"
-          className="text-white bg-gradient-to-r from-cyan-500 via-cyan-600 to-cyan-800 cursor-pointer hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          isDisable={emailExist}
-        >
+        <Button type="submit" varient="primary" isDisable={emailExist}>
           Submit
         </Button>
         <Button
-          className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-700 to-blue-300 group-hover:from-cyan-300 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+          varient="secondary"
           onClick={() => {
             navigate("/");
           }}

@@ -1,8 +1,11 @@
 import React from "react";
 
-const Label = ({ className, htmlFor, children }) => {
+const Label = ({ htmlFor, children }) => {
   return (
-    <label className={className} htmlFor={htmlFor}>
+    <label
+      className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+      htmlFor={htmlFor}
+    >
       {children}
     </label>
   );

@@ -4,10 +4,11 @@ import { MdAddCall } from "react-icons/md";
 import Label from "../common/Label";
 import Input from "../common/Input";
 import Button from "../common/Button";
+import { createNewContact, getContact, updateContact } from "../hook/phonebook";
+
 const Form = () => {
   const navigate = useNavigate();
-  const { email } = useParams();
-  const [emailExist, setEmailExist] = useState(false);
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -15,47 +16,52 @@ const Form = () => {
     email: "",
   });
 
-  function isUserExist(email) {
-    const items = JSON.parse(localStorage.getItem("phoneBook")) || [];
-    const userExist = items?.find((obj) => obj.email === email);
-    if (userExist) {
-      return userExist;
-    } else {
-      return false;
-    }
-  }
-  function handleChange(event) {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    if (isUserExist(value)) {
-      setEmailExist(true);
-    } else {
-      setEmailExist(false);
-    }
-  }
+  };
 
-  function handleSubmit(e) {
+  const handleNavigation = (nav) => {
+    navigate(nav);
+  };
+
+  const handleContactsNavigation = (url) => {
+    return () => handleNavigation(url);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const items = JSON.parse(localStorage.getItem("phoneBook")) || [];
-    if (!email) {
-      const updatedItems = [...items, formData];
-      localStorage.setItem("phoneBook", JSON.stringify(updatedItems));
+    if (!id) {
+      createNewContact(formData)
+        .then((data) => {})
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
-      const itemWithEmail = items?.findIndex((obj) => obj.email === email);
-      items[itemWithEmail] = formData;
-      localStorage.setItem("phoneBook", JSON.stringify(items));
+      updateContact(id, formData)
+        .then((data) => {})
+        .catch((error) => {
+          console.log(error);
+        });
     }
+
     navigate("/");
-  }
+  };
+
   useEffect(() => {
-    if (email && isUserExist(email)) {
-      const data = isUserExist(email);
-      setFormData(data);
+    if (id) {
+      getContact(id)
+        .then((data) => {
+          setFormData(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-  }, [email]);
+  }, [id]);
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -76,7 +82,7 @@ const Form = () => {
               type="text"
               placeholder="Jane"
               name="firstName"
-              value={formData.firstName}
+              value={formData?.firstName}
               onChange={handleChange}
             />
           </div>
@@ -88,7 +94,7 @@ const Form = () => {
               type="text"
               placeholder="Doe"
               name="lastName"
-              value={formData.lastName}
+              value={formData?.lastName}
               onChange={handleChange}
             />
           </div>
@@ -102,7 +108,7 @@ const Form = () => {
               type="tel"
               placeholder="0300-2587412"
               name="phone"
-              value={formData.phone}
+              value={formData?.phone}
               onChange={handleChange}
               pattern="[0-9]{4}-[0-9]{7}"
             />
@@ -117,23 +123,15 @@ const Form = () => {
               type="email"
               placeholder="example@gmail.com"
               name="email"
-              value={formData.email}
+              value={formData?.email}
               onChange={handleChange}
             />
           </div>
-          <div>
-            {emailExist && <div>User with this email already exist</div>}
-          </div>
         </div>
-        <Button type="submit" varient="primary" isDisable={emailExist}>
+        <Button type="submit" varient="primary">
           Submit
         </Button>
-        <Button
-          varient="secondary"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
+        <Button varient="secondary" onClick={handleContactsNavigation("/")}>
           <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
             Go to Contacts
           </span>

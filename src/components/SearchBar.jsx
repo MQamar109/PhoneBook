@@ -16,6 +16,7 @@ const SearchBar = ({ onChange }) => {
             varient="mediumBlueOutlined"
             placeholder="Search by name"
             onChange={(e) => {
+              console.log(e.target.value);
               onChange(e.target.value.toLowerCase());
             }}
           />

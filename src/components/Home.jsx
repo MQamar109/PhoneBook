@@ -4,34 +4,70 @@ import { useNavigate } from "react-router-dom";
 import ContactSvg from "../svg/ContactSvg";
 import Button from "../common/Button";
 import SearchBar from "./SearchBar";
+import { deleteContact, getAllContacts } from "../hook/phonebook";
 
 const Home = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const navigate = useNavigate();
-  function handleUpdate(email) {
-    navigate(`/update/${email}`);
-  }
-  function handleSearch(value) {
-    const items = JSON.parse(localStorage.getItem("phoneBook"));
-    const SearchedItems = items?.filter((item) =>
-      item?.firstName?.toLowerCase().includes(value)
-    );
 
-    setData(SearchedItems);
-  }
-  function handleDelete(email) {
-    const items = JSON.parse(localStorage.getItem("phoneBook"));
-    const itemToDelete = items?.findIndex((item) => item.email === email);
-    if (itemToDelete !== -1) {
-      items.splice(itemToDelete, 1);
-      setData(items);
-      localStorage.setItem("phoneBook", JSON.stringify(items));
+  const handlenNavigate = (nav) => {
+    navigate(nav);
+  };
+
+  const handleNewContact = (nav) => {
+    return () => {
+      handlenNavigate(nav);
+    };
+  };
+  const handleUpdate = (id) => {
+    navigate(`/update/${id}`);
+  };
+
+  const fetchData = () => {
+    getAllContacts()
+      .then((fetchedContacts) => {
+        setData(fetchedContacts);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleSearch = (value) => {
+    console.log(value);
+    if (value) {
+      console.log(value);
+      const filteredContacts = Object.values(data).filter((contact) =>
+        contact.firstName.toLowerCase().includes(value)
+      );
+      setData(filteredContacts);
+    } else {
+      fetchData();
     }
-  }
+  };
+
+  const handleDelete = (id) => {
+    deleteContact(id)
+      .then(() => {
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleDeletion = (id) => {
+    return () => handleDelete(id);
+  };
+
+  const handleUpdattion = (id) => {
+    return () => handleUpdate(id);
+  };
+
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem("phoneBook"));
-    setData(items);
+    fetchData();
   }, []);
+
   return (
     <div className="flex justify-center items-center">
       <section>
@@ -50,9 +86,7 @@ const Home = () => {
               <div>
                 <IoIosAddCircle
                   className="x-4 py-2 rounded cursor-pointer text-cyan-900 text-5xl md:text-7xl lg:text-8xl mb-8"
-                  onClick={() => {
-                    navigate("/create");
-                  }}
+                  onClick={handleNewContact("/create")}
                 />
               </div>
             </div>
@@ -61,9 +95,9 @@ const Home = () => {
             </div>
             {data && (
               <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {data?.map((item) => (
+                {Object.keys(data)?.map((key) => (
                   <div
-                    key={item?.email}
+                    key={key}
                     className="relative group p-8 rounded-xl bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-900"
                   >
                     <div className="inset-0 absolute aspect-video border rounded-full -translate-y-1/2 group-hover:-translate-y-1/4 duration-300 bg-gradient-to-b from-blue-500 to-white dark:from-white dark:to-white blur-2xl opacity-25 dark:opacity-5 dark:group-hover:opacity-10"></div>
@@ -73,31 +107,24 @@ const Home = () => {
                       </div>
                       <div className="mt-6 pb-6 rounded-b-[--card-border-radius] whitespace-no-wrap">
                         <h3>
-                          Name: {item?.firstName} {item?.lastName}
+                          Name: {data[key]?.firstName} {data[key]?.lastName}
                         </h3>
                         <div className="text-gray-700 dark:text-gray-300 mt-1">
-                          Phone : {item?.phone}
+                          Phone : {data[key]?.phone}
                         </div>
                         <div className="text-black-700 dark:text-white-300 mt-1">
-                          Email: {item?.email}
+                          Email: {data[key]?.email}
                         </div>
                       </div>
 
                       <div className="flex gap-3 -mb-8 py-4 border-t border-gray-200 dark:border-gray-800">
                         <Button
                           varient="tertiary"
-                          onClick={() => {
-                            handleUpdate(item?.email);
-                          }}
+                          onClick={handleUpdattion(key)}
                         >
                           Update
                         </Button>
-                        <Button
-                          varient="danger"
-                          onClick={() => {
-                            handleDelete(item?.email);
-                          }}
-                        >
+                        <Button varient="danger" onClick={handleDeletion(key)}>
                           Delete
                         </Button>
                       </div>

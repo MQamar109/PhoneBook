@@ -3,6 +3,10 @@ import SearchSvg from "../svg/SearchSvg";
 import Input from "../common/Input";
 
 const SearchBar = ({ onChange }) => {
+  const handleInputChange = (e) => {
+    onChange(e.target.value.toLowerCase());
+  };
+
   return (
     <div>
       <form className="max-w-md mx-auto">
@@ -15,10 +19,7 @@ const SearchBar = ({ onChange }) => {
             id="default-search"
             varient="mediumBlueOutlined"
             placeholder="Search by name"
-            onChange={(e) => {
-              console.log(e.target.value);
-              onChange(e.target.value.toLowerCase());
-            }}
+            onChange={handleInputChange}
           />
         </div>
       </form>

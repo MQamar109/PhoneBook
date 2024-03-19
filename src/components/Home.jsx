@@ -34,9 +34,7 @@ const Home = () => {
   };
 
   const handleSearch = (value) => {
-    console.log(value);
     if (value) {
-      console.log(value);
       const filteredContacts = Object.values(data).filter((contact) =>
         contact.firstName.toLowerCase().includes(value)
       );

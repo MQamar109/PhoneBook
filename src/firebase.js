@@ -11,7 +11,7 @@ const firebaseConfig = {
   projectId: "contactlist-90842",
   storageBucket: "contactlist-90842.appspot.com",
   messagingSenderId: "495773300259",
-  appId: FIREBASE_API_ID,
+  appId: process.env.FIREBASE_API_ID,
 };
 
 const app = initializeApp(firebaseConfig);
